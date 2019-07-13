@@ -1,8 +1,8 @@
 import { ImageSource } from "../model/ImageSource";
-export abstract class BaseService {
+export abstract class BaseService<T extends ImageSource> {
     constructor() {
         
     }
-    abstract getImages():ImageSource[];
-    abstract getName():String;
+    abstract getImages():T[];
+    abstract getName():string;
 }
