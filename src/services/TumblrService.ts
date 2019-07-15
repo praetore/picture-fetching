@@ -1,30 +1,21 @@
-import { BaseService } from "./BaseService";
-import { ImageSource } from "../model/ImageSource";
-import { TumblrClient } from "tumblr.js";
+import {BaseService} from "./BaseService";
+import * as tumblr from 'tumblr.js';
 
-export class TumblrService extends BaseService<ImageSource> {
-    getImages(): ImageSource[] {
-        let tumblr = require('tumblr.js');
-        // let client = tumblr.createClient({
-        //   consumer_key: 'MG7aNeJvfIoJQB8kzy57JFlHTxn11qCItFWvaT0C2QkL5mlUWW',
-        //   consumer_secret: '6fOqrY3Jx9EhWCHdVHvfjiMitZvLqrQsHtlpJxrXv1RVyKQyoS',
-        //   token: 'CRjdCnko7lnXVHcgVXMT2YBk6NsdJwjKkY31KfCx6tSJdZfpit',
-        //   token_secret: 'eFqtSRhYWpm7Mg6BHa9P4Is1OlPudxRJ1HJvSXzFg0W6SLRbjT'
-        // });
-        let client = tumblr.createClient({ consumer_key: 'MG7aNeJvfIoJQB8kzy57JFlHTxn11qCItFWvaT0C2QkL5mlUWW' });
-        let tag = "lol"
-        let images:ImageSource[] = [];
-        client.taggedPosts(tag,function (err:any, response:any) {
-            let images: ImageSource[] = [];
-            if(err != null)
-                throw err;
-            response.forEach((item: { photos: { original_size: { url: string; } }[] }) => {
-                images = [...images,new ImageSource(item.photos[0].original_size.url)];
-            });
+export default class TumblrService extends BaseService {
+    async getImages(query: string): Promise<string[]> {
+        const client = tumblr.createClient({
+            consumer_key: 'MG7aNeJvfIoJQB8kzy57JFlHTxn11qCItFWvaT0C2QkL5mlUWW',
+            returnPromises: true
         });
-        return images;
+        // @ts-ignore
+        return client.taggedPosts(query)
+            .then((response: any) =>
+                response.flatMap((item: any) =>
+                    item.photos.map((photo: any) =>
+                        photo.original_size.url)))
     }
-    getName(): string{
+
+    getName(): string {
         return "Tumblr";
     }
 }

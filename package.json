@@ -9,6 +9,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "core-js": "^2.6.5",
+    "oauth-1.0a": "^2.2.6",
     "quasar": "^1.0.0",
     "tumblr.js": "^2.0.2",
     "vue": "^2.6.10",
